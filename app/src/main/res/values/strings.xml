@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Chat</string>
+    <string name="message">Message</string>
+    <string name="chats">My chats</string>
+
+    <string-array name="actions">
+        <item>Delete chat</item>
+    </string-array>
+</resources>
