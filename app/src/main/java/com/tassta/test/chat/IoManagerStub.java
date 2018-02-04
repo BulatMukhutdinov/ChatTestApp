@@ -45,9 +45,11 @@ public class IoManagerStub implements IoManger {
 
     @Override
     public void setUserAddedHandler(Consumer<User> handler) {
-        User user = new UserImpl("Timur", 2, true, null);
+        User user1 = new UserImpl("Timur", 2, true, null);
+        User user2 = new UserImpl("Vasya", 3, true, null);
         if (handler != null) {
-            handler.accept(user);
+            handler.accept(user1);
+            handler.accept(user2);
         }
     }
 

@@ -1,21 +1,32 @@
 package com.tassta.test.chat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class MessageHistoryModelImpl extends MessageHistory implements MessageHistoryModel {
-    private List<Message> messages = new ArrayList<>();
+public class MessageHistoryModelImpl implements MessageHistoryModel {
+    private Map<User, MessageHistory> userMessageHistoryMap = new HashMap<>();
 
     @Override
     public MessageHistory getMessageHistory(User user) {
-        return this;
+        return userMessageHistoryMap.get(user);
     }
 
-    public void saveMessage(Message message) {
+    public void saveMessage(User user, Message message) {
+        List<Message> messages;
+        if (userMessageHistoryMap.get(user) == null) {
+            messages = new ArrayList<>();
+        } else {
+            messages = userMessageHistoryMap.get(user).getMessages();
+        }
         messages.add(message);
-    }
-
-    public List<Message> getMessages() {
-        return messages;
+        MessageHistory messageHistory = new MessageHistory() {
+            @Override
+            public List<Message> getMessages() {
+                return messages;
+            }
+        };
+        userMessageHistoryMap.put(user, messageHistory);
     }
 }

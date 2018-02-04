@@ -35,4 +35,22 @@ public class UserImpl implements User {
     public Image getIcon() {
         return icon;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserImpl user = (UserImpl) o;
+        return id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + id;
+        result = 31 * result + (isOnline ? 1 : 0);
+        result = 31 * result + (icon != null ? icon.hashCode() : 0);
+        return result;
+    }
 }

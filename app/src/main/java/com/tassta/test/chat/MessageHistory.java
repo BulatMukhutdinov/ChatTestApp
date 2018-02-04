@@ -5,7 +5,10 @@ import java.util.List;
 /**
  * Message history is basically a list of messages.
  */
-public abstract class MessageHistory
-{
+public abstract class MessageHistory {
     private List<Message> messages;
+
+    public List<Message> getMessages() {
+        return messages;
+    }
 }

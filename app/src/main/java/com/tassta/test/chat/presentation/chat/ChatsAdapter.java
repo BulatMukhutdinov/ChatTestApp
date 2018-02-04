@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tassta.test.chat.Message;
+import com.tassta.test.chat.MessageHistory;
 import com.tassta.test.chat.MessageHistoryModel;
-import com.tassta.test.chat.MessageHistoryModelImpl;
 import com.tassta.test.chat.R;
 import com.tassta.test.chat.User;
 import com.tassta.test.chat.presentation.message.MessagesFragment;
@@ -51,8 +51,9 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatItem> {
         holder.icon.setImageBitmap(imageToBitmap(chatRows.get(position).getUser().getIcon()));
         holder.name.setText(chatRows.get(position).getUser().getName());
         holder.status.setText(chatRows.get(position).getUser().isOnline() ? "Online" : "Offline");
-        List<Message> history = ((MessageHistoryModelImpl) historyModel.getMessageHistory(chatRows.get(position).getUser())).getMessages();
-        if (!history.isEmpty()) {
+        MessageHistory messageHistory = (historyModel.getMessageHistory(chatRows.get(position).getUser()));
+        if (messageHistory != null) {
+            List<Message> history = messageHistory.getMessages();
             chatRows.get(position).setLastMessage(history.get(history.size() - 1));
         }
         if (chatRows.get(position).getLastMessage() != null) {

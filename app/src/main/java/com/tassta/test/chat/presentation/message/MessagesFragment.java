@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.tassta.test.chat.MainActivity;
 import com.tassta.test.chat.Message;
+import com.tassta.test.chat.MessageHistory;
 import com.tassta.test.chat.MessageHistoryModel;
 import com.tassta.test.chat.MessageHistoryModelImpl;
 import com.tassta.test.chat.MessageImpl;
@@ -25,6 +26,7 @@ import com.tassta.test.chat.databinding.FragmentMessagesBinding;
 import com.tassta.test.chat.noimpl.IoManger;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -61,7 +63,7 @@ public class MessagesFragment extends Fragment {
                             new MessageImpl(new Date(), binding.message.getText().toString(), MainActivity.me, user);
                     ((MessagesAdapter) adapter).addMessage(message);
                     binding.messages.smoothScrollToPosition(adapter.getItemCount() - 1);
-                    ((MessageHistoryModelImpl) historyModel.getMessageHistory(user)).saveMessage(message);
+                    ((MessageHistoryModelImpl) historyModel).saveMessage(user, message);
                     binding.message.getText().clear();
                 });
 
@@ -72,7 +74,7 @@ public class MessagesFragment extends Fragment {
                     binding.messages.smoothScrollToPosition(adapter.getItemCount() - 1);
                 });
             }
-            ((MessageHistoryModelImpl) historyModel.getMessageHistory(message.getSender())).saveMessage(message);
+            ((MessageHistoryModelImpl) historyModel).saveMessage(user, message);
         });
         return binding.getRoot();
     }
@@ -90,7 +92,12 @@ public class MessagesFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setStackFromEnd(true);
         binding.messages.setLayoutManager(layoutManager);
-        adapter = new MessagesAdapter(((MessageHistoryModelImpl) historyModel.getMessageHistory(user)).getMessages());
+        MessageHistory messageHistory = historyModel.getMessageHistory(user);
+        if (messageHistory == null) {
+            adapter = new MessagesAdapter(new ArrayList<>());
+        } else {
+            adapter = new MessagesAdapter(messageHistory.getMessages());
+        }
         binding.messages.setAdapter(adapter);
     }
 

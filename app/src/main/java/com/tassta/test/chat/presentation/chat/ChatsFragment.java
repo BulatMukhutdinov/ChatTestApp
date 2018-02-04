@@ -63,7 +63,7 @@ public class ChatsFragment extends Fragment {
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> ((ChatsAdapter) adapter).updateLastMessage(message));
             }
-            ((MessageHistoryModelImpl) historyModel.getMessageHistory(message.getSender())).saveMessage(message);
+            ((MessageHistoryModelImpl) historyModel).saveMessage(message.getSender(), message);
             if (MessagesFragment.user == null || MessagesFragment.user.getId() != message.getSender().getId()) {
                 createNotification(message.getText());
             }
