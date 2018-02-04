@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.tassta.test.chat.MainActivity;
+import com.tassta.test.chat.Message;
 import com.tassta.test.chat.MessageHistoryModel;
 import com.tassta.test.chat.MessageHistoryModelImpl;
 import com.tassta.test.chat.MessageImpl;
@@ -56,11 +57,12 @@ public class MessagesFragment extends Fragment {
                 .filter(v -> binding.message.getText().length() > 0)
                 .subscribe(v -> {
                     new SendMessageTask(this).execute(null, binding.message.getText().toString());
-                    ((MessagesAdapter) adapter).addMessage(new MessageImpl(new Date(),
-                            binding.message.getText().toString(), MainActivity.me, null));
+                    Message message =
+                            new MessageImpl(new Date(), binding.message.getText().toString(), MainActivity.me, user);
+                    ((MessagesAdapter) adapter).addMessage(message);
                     binding.messages.smoothScrollToPosition(adapter.getItemCount() - 1);
+                    ((MessageHistoryModelImpl) historyModel.getMessageHistory(user)).saveMessage(message);
                     binding.message.getText().clear();
-
                 });
 
         ioManger.setReceiveMessageHandler(message -> {
@@ -70,14 +72,16 @@ public class MessagesFragment extends Fragment {
                     binding.messages.smoothScrollToPosition(adapter.getItemCount() - 1);
                 });
             }
+            ((MessageHistoryModelImpl) historyModel.getMessageHistory(message.getSender())).saveMessage(message);
         });
         return binding.getRoot();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroyView() {
+        super.onDestroyView();
         user = null;
+        ioManger.setReceiveMessageHandler(null);
     }
 
     private void configureRecyclerView() {

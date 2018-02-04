@@ -58,6 +58,7 @@ public class ChatsFragment extends Fragment {
                 getActivity().runOnUiThread(() -> ((ChatsAdapter) adapter).updateUser(id, newValue));
             }
         });
+
         ioManger.setReceiveMessageHandler(message -> {
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> ((ChatsAdapter) adapter).updateLastMessage(message));
@@ -68,6 +69,13 @@ public class ChatsFragment extends Fragment {
             }
         });
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ioManger.setReceiveMessageHandler(null);
+        ioManger.setUserAddedHandler(null);
     }
 
     private NotificationManager notifManager;
